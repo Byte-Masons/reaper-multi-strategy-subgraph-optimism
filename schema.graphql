@@ -1,0 +1,17 @@
+# type ExampleEntity @entity {
+#   id: ID!
+#   count: BigInt!
+#   owner: Bytes! # address
+#   spender: Bytes! # address
+# }
+
+type TotalBalance @entity {
+  "There should only be one TotalBalance entity with an ID of 'only'"
+  id: ID!
+  totalBalance: BigDecimal!
+}
+
+type Shareholder @entity {
+  id: Bytes!
+  balance: BigDecimal!
+}

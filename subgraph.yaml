@@ -1,0 +1,47 @@
+specVersion: 0.0.5
+schema:
+  file: ./schema.graphql
+dataSources:
+  - kind: ethereum
+    name: ReaperVaultv1_2
+    network: fantom
+    source:
+      address: "0xfB8DACDB058e84131d9C4a4BCD18a4F5704B4856"
+      abi: ReaperVaultv1_2
+      startBlock: 23152526
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.5
+      language: wasm/assemblyscript
+      entities:
+        - TotalBalance
+        - Shareholder
+        # - Approval
+        # - DepositsIncremented
+        # - NewStratCandidate
+        # - OwnershipTransferred
+        # - TermsAccepted
+        # - Transfer
+        # - UpgradeStrat
+        # - WithdrawalsIncremented
+      abis:
+        - name: ReaperVaultv1_2
+          file: ./abis/ReaperVaultv1_2.json
+      eventHandlers:
+        # - event: Approval(indexed address,indexed address,uint256)
+        #   handler: handleApproval
+        # - event: DepositsIncremented(address,uint256,uint256)
+        #   handler: handleDepositsIncremented
+        # - event: NewStratCandidate(address)
+        #   handler: handleNewStratCandidate
+        # - event: OwnershipTransferred(indexed address,indexed address)
+        #   handler: handleOwnershipTransferred
+        # - event: TermsAccepted(address)
+        #   handler: handleTermsAccepted
+        - event: Transfer(indexed address,indexed address,uint256)
+          handler: handleTransfer
+        # - event: UpgradeStrat(address)
+        #   handler: handleUpgradeStrat
+        # - event: WithdrawalsIncremented(address,uint256,uint256)
+        #   handler: handleWithdrawalsIncremented
+      file: ./src/reaper-vaultv-1-2.ts
