@@ -19,24 +19,26 @@ type Strategy @entity {
 type StrategyReport @entity {
   "The Strategy Report ID."
   id: ID!
+  "The profit or loss reported"
+  roi: BigInt!
+  "The repayment amount"
+  repayment: BigInt!
   "Timestamp the strategy report was most recently updated."
   timestamp: BigInt!
   "The Strategy reference."
   strategy: Strategy!
   "The reported total gain amount for the strategy."
-  totalGain: BigInt!
+  gains: BigInt!
   "The reported total loss amount for the strategy."
-  totalDebt: BigInt!
+  losses: BigInt!
+  "How much is allocated to the strategy"
+  allocated: BigInt!
+  "The relative strategy allocation in basis points"
+  allocBPS: BigInt!
   # "Vault state"
   # vaultUpdate: VaultUpdate!
   "The results created by this report. They are generated comparing the previous report and the current one."
   results: [StrategyReportResult!]! @derivedFrom(field: "currentReport")
-
-  #### TODO Awaiting updated Vault Yield-Oracles https://github.com/iearn-finance/yearn-vaults/pull/69
-  # "12-day EMA of Vault APY as reported by built-in Yield Oracle"
-  # apy12dEMA: Int!
-  # "50-day EMA of Vault APY as reported by built-in Yield Oracle"
-  # apy50dEMA: Int!
 }
 
 type StrategyReportResult @entity {

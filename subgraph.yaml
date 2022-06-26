@@ -26,18 +26,6 @@ dataSources:
       eventHandlers:
         - event: StrategyAdded(indexed address,uint256)
           handler: handleStrategyAdded
-        # - event: DepositsIncremented(address,uint256,uint256)
-        #   handler: handleDepositsIncremented
-        # - event: NewStratCandidate(address)
-        #   handler: handleNewStratCandidate
-        # - event: OwnershipTransferred(indexed address,indexed address)
-        #   handler: handleOwnershipTransferred
-        # - event: TermsAccepted(address)
-        #   handler: handleTermsAccepted
-        # - event: Transfer(indexed address,indexed address,uint256)
-        #   handler: handleTransfer
-        # - event: UpgradeStrat(address)
-        #   handler: handleUpgradeStrat
-        # - event: WithdrawalsIncremented(address,uint256,uint256)
-        #   handler: handleWithdrawalsIncremented
+        - event: StrategyReported(indexed address,int256,uint256,uint256,uint256,uint256,uint256)
+          handler: handleStrategyReported
       file: ./src/reaper-vaultv-2.ts
