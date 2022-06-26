@@ -1,17 +1,61 @@
-# type ExampleEntity @entity {
-#   id: ID!
-#   count: BigInt!
-#   owner: Bytes! # address
-#   spender: Bytes! # address
-# }
-
-type TotalBalance @entity {
-  "There should only be one TotalBalance entity with an ID of 'only'"
+type Vault @entity {
+  "Vault address"
   id: ID!
-  totalBalance: BigDecimal!
+  "Strategies for this Vault"
+  strategies: [Strategy!]! @derivedFrom(field: "vault")
 }
 
-type Shareholder @entity {
-  id: Bytes!
-  balance: BigDecimal!
+type Strategy @entity {
+  "Strategy address"
+  id: ID!
+  "The Vault"
+  vault: Vault!
+  "The latest report for this Strategy"
+  latestReport: StrategyReport
+  "The reports created by this strategy."
+  reports: [StrategyReport!]! @derivedFrom(field: "strategy")
+}
+
+type StrategyReport @entity {
+  "The Strategy Report ID."
+  id: ID!
+  "Timestamp the strategy report was most recently updated."
+  timestamp: BigInt!
+  "The Strategy reference."
+  strategy: Strategy!
+  "The reported total gain amount for the strategy."
+  totalGain: BigInt!
+  "The reported total loss amount for the strategy."
+  totalDebt: BigInt!
+  # "Vault state"
+  # vaultUpdate: VaultUpdate!
+  "The results created by this report. They are generated comparing the previous report and the current one."
+  results: [StrategyReportResult!]! @derivedFrom(field: "currentReport")
+
+  #### TODO Awaiting updated Vault Yield-Oracles https://github.com/iearn-finance/yearn-vaults/pull/69
+  # "12-day EMA of Vault APY as reported by built-in Yield Oracle"
+  # apy12dEMA: Int!
+  # "50-day EMA of Vault APY as reported by built-in Yield Oracle"
+  # apy50dEMA: Int!
+}
+
+type StrategyReportResult @entity {
+  "The Strategy Report Result ID."
+  id: ID!
+  "Timestamp the strategy report was most recently updated."
+  timestamp: BigInt!
+  "Blocknumber the strategy report was most recently updated."
+  blockNumber: BigInt!
+  "The current strategy report."
+  currentReport: StrategyReport!
+  "The previous strategy report."
+  previousReport: StrategyReport!
+  startTimestamp: BigInt!
+  endTimestamp: BigInt!
+  "The duration (in days) from the previous report."
+  duration: BigDecimal!
+  "Duration percentage rate."
+  durationPr: BigDecimal!
+  "Annual Percentage Rate."
+  apr: BigDecimal!
 }

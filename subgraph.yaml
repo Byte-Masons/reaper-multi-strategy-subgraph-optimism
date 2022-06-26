@@ -3,33 +3,29 @@ schema:
   file: ./schema.graphql
 dataSources:
   - kind: ethereum
-    name: ReaperVaultv1_2
+    name: ReaperVaultV2
     network: fantom
     source:
-      address: "0xfB8DACDB058e84131d9C4a4BCD18a4F5704B4856"
-      abi: ReaperVaultv1_2
-      startBlock: 23152526
+      address: "0xDFc089438B502a20516eA3515B722FbaEb853994"
+      abi: ReaperVaultV2
+      startBlock: 41098785
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.5
       language: wasm/assemblyscript
       entities:
-        - TotalBalance
-        - Shareholder
-        # - Approval
-        # - DepositsIncremented
-        # - NewStratCandidate
-        # - OwnershipTransferred
-        # - TermsAccepted
-        # - Transfer
-        # - UpgradeStrat
-        # - WithdrawalsIncremented
+        - Vault
+        - Strategy
+        - StrategyReport
+        - StrategyReportResult
       abis:
-        - name: ReaperVaultv1_2
-          file: ./abis/ReaperVaultv1_2.json
+        - name: ReaperVaultV2
+          file: ./abis/ReaperVaultV2.json
+        - name: ReaperStrategyScreamLeverage
+          file: ./abis/ReaperStrategyScreamLeverage.json
       eventHandlers:
-        # - event: Approval(indexed address,indexed address,uint256)
-        #   handler: handleApproval
+        - event: StrategyAdded(indexed address,uint256)
+          handler: handleStrategyAdded
         # - event: DepositsIncremented(address,uint256,uint256)
         #   handler: handleDepositsIncremented
         # - event: NewStratCandidate(address)
@@ -38,10 +34,10 @@ dataSources:
         #   handler: handleOwnershipTransferred
         # - event: TermsAccepted(address)
         #   handler: handleTermsAccepted
-        - event: Transfer(indexed address,indexed address,uint256)
-          handler: handleTransfer
+        # - event: Transfer(indexed address,indexed address,uint256)
+        #   handler: handleTransfer
         # - event: UpgradeStrat(address)
         #   handler: handleUpgradeStrat
         # - event: WithdrawalsIncremented(address,uint256,uint256)
         #   handler: handleWithdrawalsIncremented
-      file: ./src/reaper-vaultv-1-2.ts
+      file: ./src/reaper-vaultv-2.ts

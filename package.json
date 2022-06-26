@@ -4,10 +4,10 @@
   "scripts": {
     "codegen": "graph codegen",
     "build": "graph build",
-    "deploy": "graph deploy --node https://api.thegraph.com/deploy/ tess3rac7/fresh-beets-beethoven-crypt",
-    "create-local": "graph create --node http://localhost:8020/ tess3rac7/fresh-beets-beethoven-crypt",
-    "remove-local": "graph remove --node http://localhost:8020/ tess3rac7/fresh-beets-beethoven-crypt",
-    "deploy-local": "graph deploy --node http://localhost:8020/ --ipfs http://localhost:5001 tess3rac7/fresh-beets-beethoven-crypt"
+    "deploy": "graph deploy --node https://api.thegraph.com/deploy/ degenicus/reaper-multistrategy-subgraph",
+    "create-local": "graph create --node http://localhost:8020/ degenicus/reaper-multistrategy-subgraph",
+    "remove-local": "graph remove --node http://localhost:8020/ degenicus/reaper-multistrategy-subgraph",
+    "deploy-local": "graph deploy --node http://localhost:8020/ --ipfs http://localhost:5001 degenicus/reaper-multistrategy-subgraph"
   },
   "dependencies": {
     "@graphprotocol/graph-cli": "0.30.0",
