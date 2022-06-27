@@ -1,7 +1,8 @@
 import { Address, log, BigInt, ethereum, Bytes, BigDecimal } from "@graphprotocol/graph-ts"
 import {
   StrategyAdded,
-  StrategyReported
+  StrategyReported,
+  ReaperVaultV2
 } from "../generated/ReaperVaultV2/ReaperVaultV2"
 import {
   ReaperStrategyScreamLeverage as StrategyContract
@@ -12,6 +13,7 @@ const BIGINT_ZERO = BigInt.fromI32(0);
 const BIGDECIMAL_ZERO = new BigDecimal(BIGINT_ZERO);
 const MS_PER_DAY = new BigDecimal(BigInt.fromI32(24 * 60 * 60 * 1000));
 const DAYS_PER_YEAR = new BigDecimal(BigInt.fromI32(365));
+const BPS_UNIT = BigInt.fromI32(10000);
 
 export function handleStrategyAdded(event: StrategyAdded): void {
   const strategyAddress = event.params.strategy;
@@ -87,6 +89,7 @@ export function handleStrategyReported(event: StrategyReported): void {
           [strategyReport.id, currentReport.id, strategyId]
         );
         createStrategyReportResult(currentReport, strategyReport, event);
+        updateVaultAPR(strategy.vault);
       }
     } else {
       log.info(
@@ -174,6 +177,35 @@ export function createStrategyReportResult(
     strategyReportResult.apr = apr;
   }
   strategyReportResult.save();
+}
+
+export function updateVaultAPR(vaultAddress: string): void {
+  log.info('updateVaultAPR - vaultAddress: {}', [vaultAddress]);
+  let vaultContract = ReaperVaultV2.bind(Address.fromString(vaultAddress));
+  const nrOfStrategies = vaultContract.withdrawalQueue.length;
+  log.info('updateVaultAPR - nrOfStrategies: {}', [nrOfStrategies.toString()]);
+  for (let index = 0; index < nrOfStrategies; index++) {
+    const strategyAddress = vaultContract.withdrawalQueue(BigInt.fromI32(index));
+    //const strategyContract = StrategyContract.bind(strategyAddress);
+    const strategy = Strategy.load(strategyAddress.toString());
+    if (strategy) {
+      
+      const strategyParams = vaultContract.strategies(strategyAddress);
+      const allocation = strategyParams.getAllocBPS();
+      const reportId = strategy.latestReport;
+      if (reportId) {
+        const report = StrategyReport.load(reportId);
+        if (report) {
+          // StrategyReportResult.
+          // report.
+          // log.info('updateVaultAPR - strategy: {} - allocation: {}', [strategyAddress.toString(), allocation.toString()]);
+        }
+      }
+      
+      
+    }
+    //log.info('updateVaultAPR - strategy: {}', [strategy]);
+  }
 }
 
 // make a derived ID from transaction hash and big number
