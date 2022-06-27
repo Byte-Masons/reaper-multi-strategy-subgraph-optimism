@@ -3,6 +3,8 @@ type Vault @entity {
   id: ID!
   "Strategies for this Vault"
   strategies: [Strategy!]! @derivedFrom(field: "vault")
+  "Annual Percentage Rate for the vault."
+  apr: BigDecimal
 }
 
 type Strategy @entity {
@@ -38,7 +40,7 @@ type StrategyReport @entity {
   # "Vault state"
   # vaultUpdate: VaultUpdate!
   "The results created by this report. They are generated comparing the previous report and the current one."
-  results: [StrategyReportResult!]! @derivedFrom(field: "currentReport")
+  results: StrategyReportResult
 }
 
 type StrategyReportResult @entity {
