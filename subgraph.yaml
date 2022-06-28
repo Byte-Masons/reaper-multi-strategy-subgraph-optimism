@@ -6,9 +6,9 @@ dataSources:
     name: ReaperVaultV2
     network: fantom
     source:
-      address: "0xDFc089438B502a20516eA3515B722FbaEb853994"
+      address: "0xa6313302B3CeFF2727f19AAA30d7240d5B3CD9CD"
       abi: ReaperVaultV2
-      startBlock: 41098785
+      startBlock: 41553220
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.5
