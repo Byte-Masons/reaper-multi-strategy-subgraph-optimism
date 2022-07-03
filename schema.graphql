@@ -5,6 +5,8 @@ type Vault @entity {
   strategies: [Strategy!]! @derivedFrom(field: "vault")
   "Annual Percentage Rate for the vault."
   apr: BigDecimal
+  "The nr of strategies currently in use"
+  nrOfStrategies: BigInt!
 }
 
 type Strategy @entity {

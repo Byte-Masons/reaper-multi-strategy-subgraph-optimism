@@ -113,6 +113,9 @@ function getOrCreateVault(vaultAddress: Address): Vault {
   let vaultEntity = Vault.load(id);
   if (vaultEntity == null) {
     vaultEntity = new Vault(id);
+    vaultEntity.nrOfStrategies = BigInt.fromI32(1);
+  } else {
+    vaultEntity.nrOfStrategies = vaultEntity.nrOfStrategies.plus(BigInt.fromI32(1));
   }
   vaultEntity.save();
   return vaultEntity;
@@ -185,46 +188,49 @@ export function createStrategyReportResult(
 export function updateVaultAPR(vaultAddress: string): void {
   log.info('updateVaultAPR - vaultAddress: {}', [vaultAddress]);
   let vaultContract = ReaperVaultV2.bind(Address.fromString(vaultAddress));
-  const nrOfStrategies = vaultContract.withdrawalQueue.length;
-  log.info('updateVaultAPR - nrOfStrategies: {}', [nrOfStrategies.toString()]);
-  let vaultAPR = new BigDecimal(BIGINT_ZERO);
-  for (let index = 0; index < nrOfStrategies; index++) {
-    log.info('updateVaultAPR - entered for loop', []);
-    const strategyAddress = vaultContract.withdrawalQueue(BigInt.fromI32(index));
-    log.info('updateVaultAPR - trategyAddress.toHexString(): {}', [strategyAddress.toHexString()]);
-    const strategy = Strategy.load(strategyAddress.toHexString());
-    
-    if (strategy) {
-      log.info('updateVaultAPR - strategy is defined', []);
-      const strategyParams = vaultContract.strategies(strategyAddress);
-      const allocation = strategyParams.getAllocBPS();
-      log.info('updateVaultAPR - allocation: {}', [allocation.toString()]);
-      const reportId = strategy.latestReport;
-      if (reportId) {
-        log.info('updateVaultAPR - reportId: {}', [reportId as string]);
-        const report = StrategyReport.load(reportId);
-        if (report) {
-          log.info('updateVaultAPR - report is defined', []);
-          const reportResultsId = report.results;
-          if (reportResultsId) {
-            log.info('updateVaultAPR - reportResultsId: {}', [reportResultsId]);
-            const reportResult = StrategyReportResult.load(reportResultsId);
-            if (reportResult) {
-              log.info('updateVaultAPR - reportResult is defined', []);
-              const strategyAPRContribution = reportResult.apr.times(new BigDecimal(allocation)).div(new BigDecimal(BPS_UNIT));
-              log.info('updateVaultAPR - strategyAPRContribution: {}', [strategyAPRContribution.toString()]);
-              vaultAPR = vaultAPR.plus(strategyAPRContribution);
+  let vaultEntity = Vault.load(vaultAddress);
+  if (vaultEntity) {
+    const nrOfStrategies = vaultEntity.nrOfStrategies.toI32();
+    log.info('updateVaultAPR - nrOfStrategies: {}', [nrOfStrategies.toString()]);
+    let vaultAPR = new BigDecimal(BIGINT_ZERO);
+    for (let index = 0; index < nrOfStrategies; index++) {
+      log.info('updateVaultAPR - entered for loop', []);
+      const strategyAddress = vaultContract.withdrawalQueue(BigInt.fromI32(index));
+      log.info('updateVaultAPR - strategyAddress.toHexString(): {}', [strategyAddress.toHexString()]);
+      const strategy = Strategy.load(strategyAddress.toHexString());
+      
+      if (strategy) {
+        log.info('updateVaultAPR - strategy is defined', []);
+        const strategyParams = vaultContract.strategies(strategyAddress);
+        const allocation = strategyParams.getAllocBPS();
+        log.info('updateVaultAPR - allocation: {}', [allocation.toString()]);
+        const reportId = strategy.latestReport;
+        if (reportId) {
+          log.info('updateVaultAPR - reportId: {}', [reportId as string]);
+          const report = StrategyReport.load(reportId);
+          if (report) {
+            log.info('updateVaultAPR - report is defined', []);
+            const reportResultsId = report.results;
+            if (reportResultsId) {
+              log.info('updateVaultAPR - reportResultsId: {}', [reportResultsId]);
+              const reportResult = StrategyReportResult.load(reportResultsId);
+              if (reportResult) {
+                log.info('updateVaultAPR - reportResult is defined', []);
+                const strategyAPRContribution = reportResult.apr.times(new BigDecimal(allocation)).div(new BigDecimal(BPS_UNIT));
+                log.info('updateVaultAPR - strategyAPRContribution: {}', [strategyAPRContribution.toString()]);
+                vaultAPR = vaultAPR.plus(strategyAPRContribution);
+              }
             }
           }
         }
       }
-    }
-    const vault = Vault.load(vaultAddress);
-    if (vault) {
-      log.info('updateVaultAPR - vault is defined', []);
-      vault.apr = vaultAPR;
-      vault.save();
-      log.info('updateVaultAPR - vault saved', []);
+      const vault = Vault.load(vaultAddress);
+      if (vault) {
+        log.info('updateVaultAPR - vault is defined', []);
+        vault.apr = vaultAPR;
+        vault.save();
+        log.info('updateVaultAPR - vault saved', []);
+      }
     }
   }
 }
