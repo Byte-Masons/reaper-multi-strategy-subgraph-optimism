@@ -88,7 +88,7 @@ dataSources:
       file: ./src/reaper-vaultv-2.ts
   # BTC
   - kind: ethereum
-    name: ReaperVaultV2ETH
+    name: ReaperVaultV2BTC
     network: fantom
     source:
       address: "0xeb7761d05A31769D35073f703dD3a41f3ca9bD3d"
