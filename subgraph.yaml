@@ -86,3 +86,31 @@ dataSources:
         - event: StrategyReported(indexed address,int256,uint256,uint256,uint256,uint256,uint256)
           handler: handleStrategyReported
       file: ./src/reaper-vaultv-2.ts
+  # BTC
+  - kind: ethereum
+    name: ReaperVaultV2ETH
+    network: fantom
+    source:
+      address: "0xeb7761d05A31769D35073f703dD3a41f3ca9bD3d"
+      abi: ReaperVaultV2
+      startBlock: 42082997
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.5
+      language: wasm/assemblyscript
+      entities:
+        - Vault
+        - Strategy
+        - StrategyReport
+        - StrategyReportResult
+      abis:
+        - name: ReaperVaultV2
+          file: ./abis/ReaperVaultV2.json
+        - name: ReaperStrategyScreamLeverage
+          file: ./abis/ReaperStrategyScreamLeverage.json
+      eventHandlers:
+        - event: StrategyAdded(indexed address,uint256)
+          handler: handleStrategyAdded
+        - event: StrategyReported(indexed address,int256,uint256,uint256,uint256,uint256,uint256)
+          handler: handleStrategyReported
+      file: ./src/reaper-vaultv-2.ts
