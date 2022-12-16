@@ -2,11 +2,11 @@ import { Address, log, BigInt, ethereum, Bytes, BigDecimal } from "@graphprotoco
 import {
   StrategyAdded,
   StrategyReported,
-  ReaperVaultV2
-} from "../generated/ReaperVaultV2/ReaperVaultV2"
+  ReaperVaultERC4626
+} from "../generated/ReaperVaultERC4626WFTM/ReaperVaultERC4626"
 import {
-  ReaperStrategyScreamLeverage as StrategyContract
-} from "../generated/ReaperVaultV2/ReaperStrategyScreamLeverage"
+  ReaperStrategyGranary as StrategyContract
+} from "../generated/ReaperVaultERC4626WFTM/ReaperStrategyGranary"
 import { Vault, Strategy, StrategyReport, StrategyReportResult } from "../generated/schema"
 
 const BIGINT_ZERO = BigInt.fromI32(0);
@@ -36,20 +36,24 @@ export function handleStrategyReported(event: StrategyReported): void {
 
   const params = event.params;
   const strategyId = params.strategy.toHexString();
-  const roi = params.roi;
-  const repayment = params.repayment;
+  const gain = params.gain;
+  const loss = params.loss;
+  const debtPaid = params.debtPaid;
   const gains = params.gains;
   const losses = params.losses;
   const allocated = params.allocated;
+  const allocationAdded = params.allocationAdded;
   const allocBPS = params.allocBPS;
 
-  log.info('handleStrategyReported strategy {} roi {} repayment {} gains {} losses {} allocated {} allocBPS {}', [
+  log.info('handleStrategyReported strategy {} gain {} loss {} debtPaid {} gains {} losses {} allocated {} allocationAdded {} allocBPS {}', [
     strategyId,
-    roi.toString(),
-    repayment.toString(),
+    gain.toString(),
+    loss.toString(),
+    debtPaid.toString(),
     gains.toString(),
     losses.toString(),
     allocated.toString(),
+    allocationAdded.toString(),
     allocBPS.toString()
   ]);
 
@@ -68,13 +72,15 @@ export function handleStrategyReported(event: StrategyReported): void {
           []
         );
         strategyReport = new StrategyReport(strategyReportId);
-        strategyReport.roi = roi;
-        strategyReport.repayment = repayment;
+        strategyReport.gain = gain;
+        strategyReport.loss = loss;
+        strategyReport.debtPaid = debtPaid;
         strategyReport.strategy = strategy.id;
         strategyReport.timestamp = getTimestampInMillis(event.block);
         strategyReport.gains = gains;
         strategyReport.losses = losses;
         strategyReport.allocated = allocated;
+        strategyReport.allocationAdded = allocationAdded;
         strategyReport.allocBPS = allocBPS;
         strategyReport.save();
     }
@@ -187,7 +193,7 @@ export function createStrategyReportResult(
 
 export function updateVaultAPR(vaultAddress: string): void {
   log.info('updateVaultAPR - vaultAddress: {}', [vaultAddress]);
-  let vaultContract = ReaperVaultV2.bind(Address.fromString(vaultAddress));
+  let vaultContract = ReaperVaultERC4626.bind(Address.fromString(vaultAddress));
   let vaultEntity = Vault.load(vaultAddress);
   if (vaultEntity) {
     const nrOfStrategies = vaultEntity.nrOfStrategies.toI32();

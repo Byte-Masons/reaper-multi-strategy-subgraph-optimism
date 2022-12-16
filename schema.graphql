@@ -26,7 +26,7 @@ type StrategyReport @entity {
   "The profit or loss reported"
   roi: BigInt!
   "The repayment amount"
-  repayment: BigInt!
+  debtPaid: BigInt!
   "Timestamp the strategy report was most recently updated."
   timestamp: BigInt!
   "The Strategy reference."
@@ -39,11 +39,19 @@ type StrategyReport @entity {
   allocated: BigInt!
   "The relative strategy allocation in basis points"
   allocBPS: BigInt!
+  "Amount Gained in harvest"
+  gain: BigInt!
+  "Amount Lossed in harvest"
+  loss: BigInt!
+  "Amount added to Allocation"
+  allocationAdded: BigInt!
+
   # "Vault state"
   # vaultUpdate: VaultUpdate!
   "The results created by this report. They are generated comparing the previous report and the current one."
   results: StrategyReportResult
 }
+
 
 type StrategyReportResult @entity {
   "The Strategy Report Result ID."
