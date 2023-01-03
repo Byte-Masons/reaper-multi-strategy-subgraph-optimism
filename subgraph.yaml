@@ -1,10 +1,12 @@
 specVersion: 0.0.5
+description: Reaper multi-strategy vaults analytics
+repository: https://github.com/Byte-Masons/reaper-multi-strategy-subgraph
 schema:
   file: ./schema.graphql
 dataSources:
   # WFTM
-  - kind: ethereum
-    name: ReaperVaultERC4626WFTM
+  - kind: ethereum/contract
+    name: ReaperVaultERC4626
     network: fantom
     source:
       address: "0xE4a54b6a175Cf3F6D7A5e8Ab7544C3e6e364dBF9"
@@ -22,11 +24,11 @@ dataSources:
       abis:
         - name: ReaperVaultERC4626
           file: ./abis/ReaperVaultERC4626.json
-        - name: ReaperStrategyGranary
-          file: ./abis/ReaperStrategyGranary.json
+        - name: ReaperBaseStrategy
+          file: ./abis/ReaperBaseStrategyv4.json
       eventHandlers:
         - event: StrategyAdded(indexed address,uint256,uint256)
           handler: handleStrategyAdded
         - event: StrategyReported(indexed address,uint256,uint256,uint256,uint256,uint256,uint256,uint256,uint256)
           handler: handleStrategyReported
-      file: ./src/reaper-vaultv-2.ts
+      file: ./src/reaper-vault-erc4626.ts

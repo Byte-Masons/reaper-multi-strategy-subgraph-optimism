@@ -4,10 +4,10 @@
   "scripts": {
     "codegen": "graph codegen",
     "build": "graph build",
-    "deploy": "graph deploy --node https://api.thegraph.com/deploy/ degenicus/reaper-multistrategy-subgraph",
-    "create-local": "graph create --node http://localhost:8020/ degenicus/reaper-multistrategy-subgraph",
-    "remove-local": "graph remove --node http://localhost:8020/ degenicus/reaper-multistrategy-subgraph",
-    "deploy-local": "graph deploy --node http://localhost:8020/ --ipfs http://localhost:5001 degenicus/reaper-multistrategy-subgraph"
+    "deploy": "graph deploy --node https://api.thegraph.com/deploy/ byte-masons/multi-strategy-vaults-fantom",
+    "create-local": "graph create --node http://localhost:8020/ byte-masons/multi-strategy-vaults-fantom",
+    "remove-local": "graph remove --node http://localhost:8020/ byte-masons/multi-strategy-vaults-fantom",
+    "deploy-local": "graph deploy --node http://localhost:8020/ --ipfs http://localhost:5001 byte-masons/multi-strategy-vaults-fantom"
   },
   "dependencies": {
     "@graphprotocol/graph-cli": "0.30.0",

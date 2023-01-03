@@ -3,10 +3,10 @@ import {
   StrategyAdded,
   StrategyReported,
   ReaperVaultERC4626
-} from "../generated/ReaperVaultERC4626WFTM/ReaperVaultERC4626"
+} from "../generated/ReaperVaultERC4626/ReaperVaultERC4626"
 import {
-  ReaperStrategyGranary as StrategyContract
-} from "../generated/ReaperVaultERC4626WFTM/ReaperStrategyGranary"
+  ReaperBaseStrategy as StrategyContract
+} from "../generated/ReaperVaultERC4626/ReaperBaseStrategy"
 import { Vault, Strategy, StrategyReport, StrategyReportResult } from "../generated/schema"
 
 const BIGINT_ZERO = BigInt.fromI32(0);
