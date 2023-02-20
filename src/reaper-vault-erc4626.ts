@@ -6,7 +6,7 @@ import {
 } from "../generated/ReaperVaultERC4626/ReaperVaultERC4626"
 import {
   ReaperBaseStrategy as StrategyContract
-} from "../generated/ReaperVaultERC4626/ReaperBaseStrategy"
+} from "../generated/templates/ReaperVaultERC4626/ReaperBaseStrategy"
 import { Vault, Strategy, StrategyReport, StrategyReportResult } from "../generated/schema"
 
 const BIGINT_ZERO = BigInt.fromI32(0);
@@ -153,8 +153,11 @@ export function createStrategyReportResult(
     .minus(previousReport.timestamp.toBigDecimal());
   strategyReportResult.durationPr = BIGDECIMAL_ZERO;
   strategyReportResult.apr = BIGDECIMAL_ZERO;
-
+  strategyReportResult.vaultAPR = BIGDECIMAL_ZERO;
+  //change this to accurately reflect changes in loss in well
   const profit = currentReport.gains.minus(previousReport.gains);
+  const loss = currentReport.losses.minus(previousReport.losses);
+  const pnl = profit.minus(loss);
   const msInDays = strategyReportResult.duration.div(MS_PER_DAY);
   log.info(
     '[StrategyReportResult] Report Result - Start / End: {} / {} - Duration: {} (days {}) - Profit: {}',
@@ -163,12 +166,12 @@ export function createStrategyReportResult(
       strategyReportResult.endTimestamp.toString(),
       strategyReportResult.duration.toString(),
       msInDays.toString(),
-      profit.toString()
+      pnl.toString()
     ]
   );
 
   if (!previousReport.allocated.isZero() && !msInDays.equals(BIGDECIMAL_ZERO)) {
-    let profitOverTotalDebt = profit
+    let profitOverTotalDebt = pnl
       .toBigDecimal()
       .div(previousReport.allocated.toBigDecimal());
     strategyReportResult.durationPr = profitOverTotalDebt;
@@ -186,6 +189,7 @@ export function createStrategyReportResult(
       ]
     );
     strategyReportResult.apr = apr;
+    
   }
   strategyReportResult.save();
   return strategyReportResult;
@@ -225,6 +229,8 @@ export function updateVaultAPR(vaultAddress: string): void {
                 const strategyAPRContribution = reportResult.apr.times(new BigDecimal(allocation)).div(new BigDecimal(BPS_UNIT));
                 log.info('updateVaultAPR - strategyAPRContribution: {}', [strategyAPRContribution.toString()]);
                 vaultAPR = vaultAPR.plus(strategyAPRContribution);
+                reportResult.vaultAPR = vaultAPR;
+                reportResult.save();
               }
             }
           }

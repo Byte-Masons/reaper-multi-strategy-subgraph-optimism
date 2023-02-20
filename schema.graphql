@@ -71,4 +71,6 @@ type StrategyReportResult @entity {
   durationPr: BigDecimal!
   "Annual Percentage Rate."
   apr: BigDecimal!
+  "vault APR Snapshot."
+  vaultAPR: BigDecimal!
 }
