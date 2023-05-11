@@ -1,6 +1,6 @@
 specVersion: 0.0.5
 description: Reaper multi-strategy vaults analytics
-repository: https://github.com/Byte-Masons/reaper-multi-strategy-subgraph
+repository: https://github.com/Byte-Masons/reaper-multi-strategy-subgraph-optimism
 schema:
   file: ./schema.graphql
 dataSources:
